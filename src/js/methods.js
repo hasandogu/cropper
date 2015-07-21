@@ -1,4 +1,23 @@
   $.extend(prototype, {
+    crop: function () {
+      if (!this.built || this.disabled) {
+        return;
+      }
+
+      if (!this.cropped) {
+        this.cropped = true;
+        this.limitCropBox(true, true);
+
+        if (this.options.modal) {
+          this.$dragBox.addClass(CLASS_MODAL);
+        }
+
+        this.$cropBox.removeClass(CLASS_HIDDEN);
+      }
+
+      this.setCropBoxData(this.initialCropBox);
+    },
+
     reset: function () {
       if (!this.built || this.disabled) {
         return;
@@ -6,10 +25,11 @@
 
       this.image = $.extend({}, this.initialImage);
       this.canvas = $.extend({}, this.initialCanvas);
+      this.cropBox = $.extend({}, this.initialCropBox); // required for strict mode
+
       this.renderCanvas();
 
       if (this.cropped) {
-        this.cropBox = $.extend({}, this.initialCropBox);
         this.renderCropBox();
       }
     },
@@ -40,6 +60,10 @@
       var $this = this.$element;
 
       if (this.ready) {
+        if (this.isImg) {
+          $this.attr('src', this.originalUrl);
+        }
+
         this.unbuild();
         $this.removeClass(CLASS_HIDDEN);
       } else if (this.$clone) {
@@ -51,6 +75,11 @@
 
     replace: function (url) {
       if (!this.disabled && url) {
+        if (this.isImg) {
+          this.$element.attr('src', url);
+        }
+
+        this.options.data = null; // Remove previous data
         this.load(url);
       }
     },
@@ -72,7 +101,7 @@
     move: function (offsetX, offsetY) {
       var canvas = this.canvas;
 
-      if (this.built && !this.disabled && isNumber(offsetX) && isNumber(offsetY)) {
+      if (this.built && !this.disabled && this.options.movable && isNumber(offsetX) && isNumber(offsetY)) {
         canvas.left += offsetX;
         canvas.top += offsetY;
         this.renderCanvas(true);
@@ -119,7 +148,7 @@
       }
     },
 
-    getData: function () {
+    getData: function (rounded) {
       var cropBox = this.cropBox,
           canvas = this.canvas,
           image = this.image,
@@ -138,7 +167,7 @@
 
         $.each(data, function (i, n) {
           n = n / ratio;
-          data[i] = n;
+          data[i] = rounded ? Math.round(n) : n;
         });
 
       } else {
@@ -153,6 +182,41 @@
       data.rotate = this.ready ? image.rotate : 0;
 
       return data;
+    },
+
+    setData: function (data) {
+      var image = this.image,
+          canvas = this.canvas,
+          cropBoxData = {},
+          ratio;
+
+      if (this.built && !this.disabled && $.isPlainObject(data)) {
+        if (isNumber(data.rotate) && data.rotate !== image.rotate && this.options.rotatable) {
+          image.rotate = data.rotate;
+          this.rotated = true;
+          this.renderCanvas(true);
+        }
+
+        ratio = image.width / image.naturalWidth;
+
+        if (isNumber(data.x)) {
+          cropBoxData.left = data.x * ratio + canvas.left;
+        }
+
+        if (isNumber(data.y)) {
+          cropBoxData.top = data.y * ratio + canvas.top;
+        }
+
+        if (isNumber(data.width)) {
+          cropBoxData.width = data.width * ratio;
+        }
+
+        if (isNumber(data.height)) {
+          cropBoxData.height = data.height * ratio;
+        }
+
+        this.setCropBoxData(cropBoxData);
+      }
     },
 
     getContainerData: function () {
@@ -222,7 +286,9 @@
 
     setCropBoxData: function (data) {
       var cropBox = this.cropBox,
-          aspectRatio = this.options.aspectRatio;
+          aspectRatio = this.options.aspectRatio,
+          widthChanged,
+          heightChanged;
 
       if (this.built && this.cropped && !this.disabled && $.isPlainObject(data)) {
 
@@ -234,21 +300,21 @@
           cropBox.top = data.top;
         }
 
-        if (aspectRatio) {
-          if (isNumber(data.width)) {
-            cropBox.width = data.width;
-            cropBox.height = cropBox.width / aspectRatio;
-          } else if (isNumber(data.height)) {
-            cropBox.height = data.height;
-            cropBox.width = cropBox.height * aspectRatio;
-          }
-        } else {
-          if (isNumber(data.width)) {
-            cropBox.width = data.width;
-          }
+        if (isNumber(data.width) && data.width !== cropBox.width) {
+          widthChanged = true;
+          cropBox.width = data.width;
+        }
 
-          if (isNumber(data.height)) {
-            cropBox.height = data.height;
+        if (isNumber(data.height) && data.height !== cropBox.height) {
+          heightChanged = true;
+          cropBox.height = data.height;
+        }
+
+        if (aspectRatio) {
+          if (widthChanged) {
+            cropBox.height = cropBox.width / aspectRatio;
+          } else if (heightChanged) {
+            cropBox.width = cropBox.height * aspectRatio;
           }
         }
 
@@ -383,35 +449,21 @@
     },
 
     setDragMode: function (mode) {
-      var $dragBox = this.$dragBox,
-          cropable = false,
-          movable = false;
+      var options = this.options,
+          croppable,
+          movable;
 
-      if (!this.ready || this.disabled) {
-        return;
+      if (this.ready && !this.disabled) {
+        croppable = options.dragCrop && mode === 'crop';
+        movable = options.movable && mode === 'move';
+        mode = (croppable || movable) ? mode : 'none';
+
+        this.$dragBox.data('drag', mode).toggleClass(CLASS_CROP, croppable).toggleClass(CLASS_MOVE, movable);
+
+        if (!options.cropBoxMovable) {
+          // Sync drag mode to crop box when it is not movable(#300)
+          this.$face.data('drag', mode).toggleClass(CLASS_CROP, croppable).toggleClass(CLASS_MOVE, movable);
+        }
       }
-
-      switch (mode) {
-        case 'crop':
-          if (this.options.dragCrop) {
-            cropable = true;
-            $dragBox.data('drag', mode);
-          } else {
-            movable = true;
-          }
-
-          break;
-
-        case 'move':
-          movable = true;
-          $dragBox.data('drag', mode);
-
-          break;
-
-        default:
-          $dragBox.removeData('drag');
-      }
-
-      $dragBox.toggleClass(CLASS_CROP, cropable).toggleClass(CLASS_MOVE, movable);
     }
   });

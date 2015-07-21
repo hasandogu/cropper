@@ -20,9 +20,9 @@
       CLASS_BG = 'cropper-bg',
 
       // Events
-      EVENT_MOUSE_DOWN = 'mousedown touchstart',
-      EVENT_MOUSE_MOVE = 'mousemove touchmove',
-      EVENT_MOUSE_UP = 'mouseup mouseleave touchend touchleave touchcancel',
+      EVENT_MOUSE_DOWN = 'mousedown touchstart pointerdown MSPointerDown',
+      EVENT_MOUSE_MOVE = 'mousemove touchmove pointermove MSPointerMove',
+      EVENT_MOUSE_UP = 'mouseup touchend touchcancel pointerup pointercancel MSPointerUp MSPointerCancel',
       EVENT_WHEEL = 'wheel mousewheel DOMMouseScroll',
       EVENT_DBLCLICK = 'dblclick',
       EVENT_RESIZE = 'resize' + CROPPER_NAMESPACE, // Bind to window with namespace
@@ -33,6 +33,7 @@
       EVENT_DRAG_END = 'dragend' + CROPPER_NAMESPACE,
       EVENT_ZOOM_IN = 'zoomin' + CROPPER_NAMESPACE,
       EVENT_ZOOM_OUT = 'zoomout' + CROPPER_NAMESPACE,
+      EVENT_CHANGE = 'change' + CROPPER_NAMESPACE,
 
       // Supports
       SUPPORT_CANVAS = $.isFunction($('<canvas>')[0].getContext),

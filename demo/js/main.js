@@ -30,12 +30,19 @@ $(function () {
         $dataWidth = $('#dataWidth'),
         $dataRotate = $('#dataRotate'),
         options = {
+          // data: {
+          //   x: 420,
+          //   y: 60,
+          //   width: 640,
+          //   height: 360
+          // },
           // strict: false,
           // responsive: false,
           // checkImageOrigin: false
 
           // modal: false,
           // guides: false,
+          // center: false,
           // highlight: false,
           // background: false,
 
@@ -43,11 +50,13 @@ $(function () {
           // autoCropArea: 0.5,
           // dragCrop: false,
           // movable: false,
-          // resizable: false,
           // rotatable: false,
           // zoomable: false,
           // touchDragZoom: false,
           // mouseWheelZoom: false,
+          // cropBoxMovable: false,
+          // cropBoxResizable: false,
+          // doubleClickToggle: false,
 
           // minCanvasWidth: 320,
           // minCanvasHeight: 180,
@@ -96,6 +105,9 @@ $(function () {
       },
       'zoomout.cropper': function (e) {
         console.log(e.type);
+      },
+      'change.cropper': function (e) {
+        console.log(e.type);
       }
     }).cropper(options);
 
@@ -105,6 +117,10 @@ $(function () {
       var data = $(this).data(),
           $target,
           result;
+
+      if (!$image.data('cropper')) {
+        return;
+      }
 
       if (data.method) {
         data = $.extend({}, data); // Clone a new one
@@ -137,6 +153,10 @@ $(function () {
 
       }
     }).on('keydown', function (e) {
+
+      if (!$image.data('cropper')) {
+        return;
+      }
 
       switch (e.which) {
         case 37:
@@ -173,6 +193,10 @@ $(function () {
         var files = this.files,
             file;
 
+        if (!$image.data('cropper')) {
+          return;
+        }
+
         if (files && files.length) {
           file = files[0];
 
@@ -180,7 +204,7 @@ $(function () {
             blobURL = URL.createObjectURL(file);
             $image.one('built.cropper', function () {
               URL.revokeObjectURL(blobURL); // Revoke when load complete
-            }).cropper('reset', true).cropper('replace', blobURL);
+            }).cropper('reset').cropper('replace', blobURL);
             $inputImage.val('');
           } else {
             showMessage('Please choose an image file.');
@@ -194,9 +218,23 @@ $(function () {
 
     // Options
     $('.docs-options :checkbox').on('change', function () {
-      var $this = $(this);
+      var $this = $(this),
+          cropBoxData,
+          canvasData;
+
+      if (!$image.data('cropper')) {
+        return;
+      }
 
       options[$this.val()] = $this.prop('checked');
+
+      cropBoxData = $image.cropper('getCropBoxData');
+      canvasData = $image.cropper('getCanvasData');
+      options.built = function () {
+        $image.cropper('setCropBoxData', cropBoxData);
+        $image.cropper('setCanvasData', canvasData);
+      };
+
       $image.cropper('destroy').cropper(options);
     });
 

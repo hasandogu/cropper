@@ -62,6 +62,9 @@ $(function () {
       },
       'zoomout.cropper': function (e) {
         console.log(e.type);
+      },
+      'change.cropper': function (e) {
+        console.log(e.type);
       }
     }).cropper(options);
 
@@ -71,6 +74,10 @@ $(function () {
       var data = $(this).data(),
           $target,
           result;
+
+      if (!$image.data('cropper')) {
+        return;
+      }
 
       if (data.method) {
         data = $.extend({}, data); // Clone a new one
@@ -103,6 +110,10 @@ $(function () {
 
       }
     }).on('keydown', function (e) {
+
+      if (!$image.data('cropper')) {
+        return;
+      }
 
       if (this.scrollTop > 300) {
         return;
@@ -143,6 +154,10 @@ $(function () {
         var files = this.files,
             file;
 
+        if (!$image.data('cropper')) {
+          return;
+        }
+
         if (files && files.length) {
           file = files[0];
 
@@ -150,7 +165,7 @@ $(function () {
             blobURL = URL.createObjectURL(file);
             $image.one('built.cropper', function () {
               URL.revokeObjectURL(blobURL); // Revoke when load complete
-            }).cropper('reset', true).cropper('replace', blobURL);
+            }).cropper('reset').cropper('replace', blobURL);
             $inputImage.val('');
           } else {
             showMessage('Please choose an image file.');
@@ -164,9 +179,23 @@ $(function () {
 
     // Options
     $('.docs-options :checkbox').on('change', function () {
-      var $this = $(this);
+      var $this = $(this),
+          cropBoxData,
+          canvasData;
+
+      if (!$image.data('cropper')) {
+        return;
+      }
 
       options[$this.val()] = $this.prop('checked');
+
+      cropBoxData = $image.cropper('getCropBoxData');
+      canvasData = $image.cropper('getCanvasData');
+      options.built = function () {
+        $image.cropper('setCropBoxData', cropBoxData);
+        $image.cropper('setCanvasData', canvasData);
+      };
+
       $image.cropper('destroy').cropper(options);
     });
 
@@ -189,8 +218,8 @@ $(function () {
       guides: false,
       highlight: false,
       dragCrop: false,
-      movable: false,
-      resizable: false
+      cropBoxMovable: false,
+      cropBoxResizable: false
     });
   })();
 
@@ -198,23 +227,43 @@ $(function () {
   // Example 2
   (function () {
     var $image = $('#cropper-example-2 > img'),
-        canvasData,
-        cropBoxData;
+        cropBoxData,
+        canvasData;
 
     $('#cropper-example-2-modal').on('shown.bs.modal', function () {
       $image.cropper({
         autoCropArea: 0.5,
         built: function () {
-          $image.cropper('setCanvasData', canvasData);
+          // Strict mode: set crop box data first
           $image.cropper('setCropBoxData', cropBoxData);
+          $image.cropper('setCanvasData', canvasData);
         }
       });
     }).on('hidden.bs.modal', function () {
-      canvasData = $image.cropper('getCanvasData');
       cropBoxData = $image.cropper('getCropBoxData');
+      canvasData = $image.cropper('getCanvasData');
       $image.cropper('destroy');
     });
+  })();
 
+
+  // Example 3
+  (function () {
+    var $image = $('.cropper-example-3 > img'),
+        replaced;
+
+    $image.cropper();
+
+    $('#replace-toggle').click(function () {
+      var url = 'img/picture-2.jpg';
+
+      if (replaced) {
+        url = 'img/picture.jpg';
+      }
+
+      $image.cropper('replace', url);
+      replaced = !replaced;
+    });
   })();
 
 });

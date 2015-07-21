@@ -65,6 +65,10 @@
   background-position: -360px 0;
 }
 
+.icon-ok {
+  background-position: -390px 0;
+}
+
 
 /* Alerts
  * -------------------------------------------------------------------------- */
@@ -178,13 +182,21 @@ body {
   background-color: #fcfcfc;
 }
 
+.docs-jumbotron .version {
+  font-size: 14px;
+  color: #ccc;
+}
+
 .docs-carbonads-container {
   position: relative;
 }
 
 .docs-carbonads {
-  max-width: 320px;
-  max-height: 100px;
+  max-width: 350px;
+  padding: 15px;
+  border: 1px solid #0074d9;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .carbon-wrap {
@@ -222,8 +234,8 @@ body {
 @media (min-width: 992px) {
   .docs-carbonads {
     position: absolute;
-    right: 15px;
-    bottom: 15px;
+    right: 0;
+    bottom: 5px;
   }
 }
 
@@ -436,8 +448,14 @@ body {
   }
 }
 
-.cropper-example-1 > img {
+.cropper-example-1 > img,
+.cropper-example-3 > img {
   max-width: 100%;
+}
+
+.cropper-example-3 {
+  width: 100%;
+  margin-top: 15px;
 }
 
 

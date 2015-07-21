@@ -11,6 +11,10 @@
     // Type: Function
     crop: null,
 
+    // Previous/latest crop data
+    // Type: Object
+    data: null,
+
     // Add extra containers for previewing
     // Type: String (jQuery selector)
     preview: '',
@@ -22,17 +26,20 @@
 
     modal: true, // Show the black modal
     guides: true, // Show the dashed lines for guiding
+    center: true, // Show the center indicator for guiding
     highlight: true, // Show the white modal to highlight the crop box
     background: true, // Show the grid background
 
     autoCrop: true, // Enable to crop the image automatically when initialize
     dragCrop: true, // Enable to create new crop box by dragging over the image
-    movable: true, // Enable to move the crop box
-    resizable: true, // Enable to resize the crop box
+    movable: true, // Enable to move the image
     rotatable: true, // Enable to rotate the image
     zoomable: true, // Enable to zoom the image
     touchDragZoom: true, // Enable to zoom the image by wheeling mouse
     mouseWheelZoom: true, // Enable to zoom the image by dragging touch
+    cropBoxMovable: true, // Enable to move the crop box
+    cropBoxResizable: true, // Enable to resize the crop box
+    doubleClickToggle: true, // Toggle drag mode between "crop" and "move" when double click on the cropper
 
     // Dimensions
     minCanvasWidth: 0,
@@ -49,7 +56,8 @@
     dragmove: null, // Function
     dragend: null, // Function
     zoomin: null, // Function
-    zoomout: null // Function
+    zoomout: null, // Function
+    change: null // Function
   };
 
   Cropper.setDefaults = function (options) {

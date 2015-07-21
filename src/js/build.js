@@ -3,7 +3,8 @@
         $clone = this.$clone,
         options = this.options,
         $cropper,
-        $cropBox;
+        $cropBox,
+        $face;
 
     if (!this.ready) {
       return;
@@ -27,6 +28,7 @@
     this.$dragBox = $cropper.find('.cropper-drag-box');
     this.$cropBox = $cropBox = $cropper.find('.cropper-crop-box');
     this.$viewBox = $cropper.find('.cropper-view-box');
+    this.$face = $face = $cropBox.find('.cropper-face');
 
     this.addListeners();
     this.initPreview();
@@ -44,30 +46,35 @@
       $cropBox.addClass(CLASS_HIDDEN);
     }
 
-    if (options.background) {
-      $cropper.addClass(CLASS_BG);
-    }
-
-    if (!options.highlight) {
-      $cropBox.find('.cropper-face').addClass(CLASS_INVISIBLE);
-    }
-
     if (!options.guides) {
       $cropBox.find('.cropper-dashed').addClass(CLASS_HIDDEN);
     }
 
-    if (!options.movable) {
-      $cropBox.find('.cropper-face').data('drag', 'move');
+    if (!options.center) {
+      $cropBox.find('.cropper-center').addClass(CLASS_HIDDEN);
     }
 
-    if (!options.resizable) {
+    if (options.cropBoxMovable) {
+      $face.addClass(CLASS_MOVE).data('drag', 'all');
+    }
+
+    if (!options.highlight) {
+      $face.addClass(CLASS_INVISIBLE);
+    }
+
+    if (options.background) {
+      $cropper.addClass(CLASS_BG);
+    }
+
+    if (!options.cropBoxResizable) {
       $cropBox.find('.cropper-line, .cropper-point').addClass(CLASS_HIDDEN);
     }
 
-    this.setDragMode(options.dragCrop ? 'crop' : 'move');
+    this.setDragMode(options.dragCrop ? 'crop' : options.movable ? 'move' : 'none');
 
     this.built = true;
     this.render();
+    this.setData(options.data);
     $this.one(EVENT_BUILT, options.built).trigger(EVENT_BUILT); // Only trigger once
   };
 
@@ -77,6 +84,9 @@
     }
 
     this.built = false;
+    this.initialImage = null;
+    this.initialCanvas = null; // This is necessary when replace
+    this.initialCropBox = null;
     this.container = null;
     this.canvas = null;
     this.cropBox = null; // This is necessary when replace

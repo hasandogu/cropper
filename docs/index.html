@@ -1,18 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A simple jQuery image cropping plugin.">
   <meta name="keywords" content="HTML, CSS, JS, JavaScript, jQuery plugin, image cropping, front-end, frontend, web development">
   <meta name="author" content="Fengyuan Chen">
   <title>Cropper</title>
-  <link href="apple-touch-icon-precomposed.png" rel="apple-touch-icon-precomposed">
+  <link href="apple-touch-icon.png" rel="apple-touch-icon">
   <link href="favicon.ico" rel="shortcut icon">
   <link href="favicon.ico" rel="icon">
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-  <link href="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.css" rel="stylesheet">
   <link href="css/cropper.min.css" rel="stylesheet">
   <link href="css/main.css" rel="stylesheet">
 
@@ -50,7 +49,7 @@
   <!-- Jumbotron -->
   <div class="jumbotron docs-jumbotron">
     <div class="container">
-      <h1>Cropper</h1>
+      <h1>Cropper <small class="version">v0.10.1</small></h1>
       <p class="lead">A simple jQuery image cropping plugin.</p>
       <div class="docs-carbonads-container">
         <div class="docs-carbonads">
@@ -145,6 +144,16 @@
         </div>
 
         <div class="btn-group">
+          <button class="btn btn-primary" data-method="crop" type="button" title="Crop">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;crop&quot;)">
+              <span class="icon icon-ok"></span>
+            </span>
+          </button>
+          <button class="btn btn-primary" data-method="clear" type="button" title="Clear">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;clear&quot;)">
+              <span class="icon icon-remove"></span>
+            </span>
+          </button>
           <button class="btn btn-primary" data-method="disable" type="button" title="Disable">
             <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;disable&quot;)">
               <span class="icon icon-lock"></span>
@@ -153,11 +162,6 @@
           <button class="btn btn-primary" data-method="enable" type="button" title="Enable">
             <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;enable&quot;)">
               <span class="icon icon-unlock"></span>
-            </span>
-          </button>
-          <button class="btn btn-primary" data-method="clear" type="button" title="Clear">
-            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;clear&quot;)">
-              <span class="icon icon-remove"></span>
             </span>
           </button>
           <button class="btn btn-primary" data-method="reset" type="button" title="Reset">
@@ -185,13 +189,13 @@
             </span>
           </button>
           <button class="btn btn-primary" data-method="getCroppedCanvas" data-option="{ &quot;width&quot;: 160, &quot;height&quot;: 90 }" type="button">
-            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;getCroppedCanvas&quot;, { &quot;width&quot;: 160, &quot;height&quot;: 90 })">
-              160 &times; 90
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;getCroppedCanvas&quot;, { width: 160, height: 90 })">
+              160&times;90
             </span>
           </button>
           <button class="btn btn-primary" data-method="getCroppedCanvas" data-option="{ &quot;width&quot;: 320, &quot;height&quot;: 180 }" type="button">
-            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;getCroppedCanvas&quot;, { &quot;width&quot;: 320, &quot;height&quot;: 180 })">
-              320 &times; 180
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;getCroppedCanvas&quot;, { width: 320, height: 180 })">
+              320&times;180
             </span>
           </button>
         </div>
@@ -224,6 +228,16 @@
             </span>
           </button>
         </div>
+        <button class="btn btn-primary" data-method="setData" data-target="#putData" type="button">
+          <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;setData&quot;, data)">
+            Set Data
+          </span>
+        </button>
+        <button class="btn btn-primary" data-method="getContainerData" data-option="" data-target="#putData" type="button">
+          <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;getContainerData&quot;)">
+            Get Container Data
+          </span>
+        </button>
         <button class="btn btn-primary" data-method="getImageData" data-option="" data-target="#putData" type="button">
           <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;getImageData&quot;)">
             Get Image Data
@@ -260,7 +274,7 @@
                 <h4 class="modal-title" id="diagramTitle">Diagram of data's properties</h4>
               </div>
               <div class="modal-body">
-                <img class="img-responsive" src="img/data.png" alt="a schematic diagram of data's properties">
+                <img class="img-responsive" src="img/data.jpg" alt="a schematic diagram of data's properties">
               </div>
               <!-- <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal" type="button">Close</button>
@@ -345,6 +359,12 @@
             </li>
             <li role="presentation">
               <label class="checkbox-inline">
+                <input type="checkbox" name="option" value="center" checked>
+                center
+              </label>
+            </li>
+            <li role="presentation">
+              <label class="checkbox-inline">
                 <input type="checkbox" name="option" value="highlight" checked>
                 highlight
               </label>
@@ -376,12 +396,6 @@
             </li>
             <li role="presentation">
               <label class="checkbox-inline">
-                <input type="checkbox" name="option" value="resizable" checked>
-                resizable
-              </label>
-            </li>
-            <li role="presentation">
-              <label class="checkbox-inline">
                 <input type="checkbox" name="option" value="rotatable" checked>
                 rotatable
               </label>
@@ -402,6 +416,24 @@
               <label class="checkbox-inline">
                 <input type="checkbox" name="option" value="mouseWheelZoom" checked>
                 mouseWheelZoom
+              </label>
+            </li>
+            <li role="presentation">
+              <label class="checkbox-inline">
+                <input type="checkbox" name="option" value="cropBoxMovable" checked>
+                cropBoxMovable
+              </label>
+            </li>
+            <li role="presentation">
+              <label class="checkbox-inline">
+                <input type="checkbox" name="option" value="cropBoxResizable" checked>
+                cropBoxResizable
+              </label>
+            </li>
+            <li role="presentation">
+              <label class="checkbox-inline">
+                <input type="checkbox" name="option" value="doubleClickToggle" checked>
+                doubleClickToggle
               </label>
             </li>
           </ul>
@@ -475,8 +507,8 @@
   guides: false,
   highlight: false,
   dragCrop: false,
-  movable: false,
-  resizable: false
+  cropBoxMovable: false,
+  cropBoxResizable: false
 });</pre>
       </div>
     </div>
@@ -526,26 +558,71 @@
       <div class="col-sm-6">
         <p>JavaScript:</p>
         <pre class="prettyprint">var $image = $('#cropper-example-2 &gt; img'),
-    canvasData,
-    cropBoxData;
+    cropBoxData,
+    canvasData;
 
 $('#cropper-example-2-modal').on('shown.bs.modal', function () {
   $image.cropper({
     autoCropArea: 0.5,
     built: function () {
-      $image.cropper('setCanvasData', canvasData);
+      // Strict mode: set crop box data first
       $image.cropper('setCropBoxData', cropBoxData);
+      $image.cropper('setCanvasData', canvasData);
     }
   });
 }).on('hidden.bs.modal', function () {
-  canvasData = $image.cropper('getCanvasData');
   cropBoxData = $image.cropper('getCropBoxData');
+  canvasData = $image.cropper('getCanvasData');
   $image.cropper('destroy');
 });</pre>
       </div>
     </div>
 
     <!-- Example 3 -->
+    <h3 class="page-header">Cropper with responsive container.</h3>
+    <div class="row">
+      <div class="col-sm-4">
+        <h5>Demo:</h5>
+        <button class="btn btn-primary" id="replace-toggle" type="button">Toggle</button>
+        <div class="cropper-example-3">
+          <img class="img-responsive" src="img/picture.jpg" alt="Picture">
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <h5>HTML:</h5>
+        <pre class="prettyprint">&lt;button class=&quot;btn btn-primary&quot; id=&quot;replace-toggle&quot; type=&quot;button&quot;&gt;Toggle&lt;/button&gt;
+&lt;div class=&quot;cropper-example-3&quot;&gt;
+  &lt;img src=&quot;img/picture.jpg&quot; alt=&quot;Picture&quot;&gt;
+&lt;/div&gt;</pre>
+        <h5>CSS:</h5>
+        <pre class="prettyprint">.cropper-example-3 {
+  width: 100%;
+}
+.cropper-example-3 &gt; img {
+  max-width: 100%;
+}</pre>
+      </div>
+      <div class="col-sm-4">
+        <h5>JavaScript:</h5>
+        <pre class="prettyprint">var $image = $('.cropper-example-3 &gt; img'),
+    replaced;
+
+$image.cropper();
+
+$('#replace-toggle').click(function () {
+  var url = 'img/picture-2.jpg';
+
+  if (replaced) {
+    url = 'img/picture.jpg';
+  }
+
+  $image.cropper('replace', url);
+  replaced = !replaced;
+});</pre>
+      </div>
+    </div>
+
+    <!-- Example 4 -->
     <h3 class="page-header">Crop avatar <small>A complete example</small></h3>
     <p>This example requires a <strong>PHP</strong> server to upload and crop image. Please download and test it.</p>
     <div class="docs-buttons">
@@ -568,14 +645,11 @@ $('#cropper-example-2-modal').on('shown.bs.modal', function () {
     </div>
   </footer>
 
-  <!-- Alert -->
-  <div class="docs-alert"><span class="warning message"></span></div>
-
   <!-- Scripts -->
-  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-  <script src="//fengyuanchen.github.io/assets/js/main.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="//cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+  <script src="//fengyuanchen.github.io/js/main.js"></script>
   <script src="js/cropper.min.js"></script>
   <script src="js/main.js"></script>
 </body>

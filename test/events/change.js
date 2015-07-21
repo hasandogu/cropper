@@ -4,10 +4,10 @@ $(function () {
 
   var $image = $(window.createCropperImage());
 
-  $image.on('dragend.cropper', function (e) {
+  $image.on('change.cropper', function (e) {
 
-    QUnit.test('methods.dragend', function (assert) {
-      assert.equal(e.type, 'dragend');
+    QUnit.test('methods.change', function (assert) {
+      assert.equal(e.type, 'change');
       assert.equal(e.namespace, 'cropper');
     });
 
@@ -16,13 +16,13 @@ $(function () {
       var $dragBox = $image.data('cropper').$dragBox;
 
       // Triggers events manually when built
-      $dragBox.trigger('mousedown').trigger('mouseup');
+      $dragBox.trigger('mousedown').trigger('mousemove').trigger('mouseup');
     },
 
-    dragend: function (e) {
+    change: function (e) {
 
-      QUnit.test('options.dragend', function (assert) {
-        assert.equal(e.type, 'dragend');
+      QUnit.test('options.change', function (assert) {
+        assert.equal(e.type, 'change');
         assert.equal(e.namespace, 'cropper');
       });
 

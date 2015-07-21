@@ -1,6 +1,33 @@
 # Changelog
 
 
+## 0.10.1 (Jul 5, 2015)
+
+- Add Pointer Events support (#328)
+- Add RTL support (#342)
+- Add one new option: "center" (#367)
+- Allow cropper to grow vertically (#350)
+
+
+## 0.10.0 (Jun 8, 2015)
+
+- Add three new options: "change", "cropBoxMovable", "doubleClickToggle"
+- Change "movable" option (only for image)
+- Rename "resizable" to "cropBoxResizable"
+- Add one new event: "change.cropper"
+- Locking aspect ratio in "free mode" by holding shift key (#259)
+- Sync drag mode to crop box when it is not movable (#300)
+
+
+## 0.9.3 (May 10, 2015)
+
+- Add one new option: "data"
+- Add two new methods: "setData" (#290, #296), "crop" (#275)
+- Fix incorrect minWidth/Height size of canvas (#295)
+- Fix the strict mode bug (#280)
+- Fix the crop box resizing bug (#277)
+
+
 ## 0.9.2 (Apr 18, 2015)
 
 - Improve strict mode to show full image
